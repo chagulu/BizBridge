@@ -39,14 +39,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     private PlanType planType = PlanType.BASIC;
 
-    // ✅ NEW: Track if user completed registration
+    // ✅ Track if user completed registration
     @Column(name = "is_verified")
     private Boolean verified = false;
 
-    // ✅ NEW: Track how the user was registered
+    // ✅ Track how the user registered (BUYER, SELLER, WEB, MOBILE, ADMIN)
     @Enumerated(EnumType.STRING)
-    private RegistrationType registrationType = RegistrationType.MOBILE;
+    private RegistrationType registrationType = RegistrationType.WEB;
 
+    // ✅ Track from where user registered (web portal, mobile app, etc.)
     @Enumerated(EnumType.STRING)
     private RegistrationSource registrationSource = RegistrationSource.WEB;
 
@@ -80,10 +81,17 @@ public class User {
         BASIC, PREMIUM
     }
 
+    /**
+     * RegistrationType indicates *what kind* of user registration flow was followed.
+     * We include BUYER and SELLER to match OTP-based registration flow.
+     */
     public enum RegistrationType {
-        WEB, MOBILE, ADMIN
+        WEB, MOBILE, ADMIN, BUYER, SELLER
     }
 
+    /**
+     * RegistrationSource tracks the *channel* through which user signed up.
+     */
     public enum RegistrationSource {
         WEB, APP, ADMIN
     }
