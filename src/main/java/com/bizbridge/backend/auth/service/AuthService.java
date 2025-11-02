@@ -1,6 +1,8 @@
 package com.bizbridge.backend.auth.service;
 
+import com.bizbridge.backend.auth.dto.LoginResponse;
 import com.bizbridge.backend.auth.dto.OtpRequest;
+import com.bizbridge.backend.auth.dto.UserProfileDto;
 import com.bizbridge.backend.auth.dto.VerifyOtpRequest;
 import com.bizbridge.backend.auth.repository.UserRepository;
 import com.bizbridge.backend.auth.utils.JwtUtil;
@@ -41,22 +43,30 @@ public class AuthService {
         return "OTP sent successfully to " + user.getMobileNo();
     }
 
-    public String verifyOtp(VerifyOtpRequest request) {
-        User user = userRepository.findByMobileNo(request.getMobileNo())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public LoginResponse verifyOtp(VerifyOtpRequest request) {
+    User user = userRepository.findByMobileNo(request.getMobileNo())
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (user.getOtpCode() == null ||
-            !user.getOtpCode().equals(request.getOtp()) ||
-            user.getOtpExpiry().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Invalid or expired OTP");
-        }
-
-        // OTP is valid — generate JWT
-        String token = jwtUtil.generateToken(user);
-        user.setJwtToken(token);
-        user.setOtpCode(null);
-        userRepository.save(user);
-
-        return token;
+    if (user.getOtpCode() == null ||
+        !user.getOtpCode().equals(request.getOtp()) ||
+        user.getOtpExpiry().isBefore(LocalDateTime.now())) {
+        throw new RuntimeException("Invalid or expired OTP");
     }
+
+    // OTP is valid — generate JWT
+    String token = jwtUtil.generateToken(user);
+    user.setJwtToken(token);
+    user.setOtpCode(null);
+    userRepository.save(user);
+
+    // Create Response DTO
+    LoginResponse response = LoginResponse.builder()
+            .status("SUCCESS")
+            .token(token)
+            .user(UserProfileDto.fromEntity(user))
+            .build();
+
+    return response;
+}
+
 }

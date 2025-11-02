@@ -36,6 +36,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Enumerated(EnumType.STRING)
+    private PlanType planType = PlanType.BASIC;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -56,5 +59,9 @@ public class User {
 
     public enum Status {
         ACTIVE, BLOCKED
+    }
+
+    public enum PlanType {
+    BASIC, PREMIUM
     }
 }

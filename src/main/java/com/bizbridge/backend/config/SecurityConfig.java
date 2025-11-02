@@ -14,25 +14,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // Disable CSRF (not needed for stateless REST APIs)
                 .csrf(csrf -> csrf.disable())
-
-                // Authorize requests
                 .authorizeHttpRequests(auth -> auth
-                        // Allow public endpoints
+                        // 🔓 Public endpoints
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/api/auth/**",       // Buyer & Seller OTP login
+                                "/api/admin/login",   // Super Admin login
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        // Require auth for everything else
+
+                        // 🔒 Everything else requires authentication
                         .anyRequest().authenticated()
                 )
-
-                // Disable default login form
                 .formLogin(form -> form.disable())
-
-                // Disable session (stateless JWT)
                 .sessionManagement(session -> session.disable());
 
         return http.build();

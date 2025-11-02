@@ -1,5 +1,6 @@
 package com.bizbridge.backend.auth.controller;
 
+import com.bizbridge.backend.auth.dto.LoginResponse;
 import com.bizbridge.backend.auth.dto.OtpRequest;
 import com.bizbridge.backend.auth.dto.VerifyOtpRequest;
 import com.bizbridge.backend.auth.service.AuthService;
@@ -20,9 +21,8 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<?> verifyOtp(@RequestBody VerifyOtpRequest request) {
-        String token = authService.verifyOtp(request);
-        return ResponseEntity.ok()
-                .body("{\"status\":\"SUCCESS\", \"token\":\"" + token + "\"}");
+    public ResponseEntity<LoginResponse> verifyOtp(@RequestBody VerifyOtpRequest request) {
+        return ResponseEntity.ok(authService.verifyOtp(request));
     }
+
 }
