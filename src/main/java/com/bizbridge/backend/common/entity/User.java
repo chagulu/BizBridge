@@ -26,7 +26,7 @@ public class User {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    private Role role;  // BUYER or SELLER
+    private Role role;  // BUYER, SELLER, ADMIN
 
     private String otpCode;
     private LocalDateTime otpExpiry;
@@ -38,6 +38,17 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private PlanType planType = PlanType.BASIC;
+
+    // ✅ NEW: Track if user completed registration
+    @Column(name = "is_verified")
+    private Boolean verified = false;
+
+    // ✅ NEW: Track how the user was registered
+    @Enumerated(EnumType.STRING)
+    private RegistrationType registrationType = RegistrationType.MOBILE;
+
+    @Enumerated(EnumType.STRING)
+    private RegistrationSource registrationSource = RegistrationSource.WEB;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -53,6 +64,10 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
+    // ===============================
+    // ENUMS
+    // ===============================
+
     public enum Role {
         BUYER, SELLER, ADMIN
     }
@@ -62,6 +77,14 @@ public class User {
     }
 
     public enum PlanType {
-    BASIC, PREMIUM
+        BASIC, PREMIUM
+    }
+
+    public enum RegistrationType {
+        WEB, MOBILE, ADMIN
+    }
+
+    public enum RegistrationSource {
+        WEB, APP, ADMIN
     }
 }
